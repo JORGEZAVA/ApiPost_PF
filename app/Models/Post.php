@@ -17,7 +17,8 @@ class Post extends Model
         'nameAnimal',
         'typeAnimal',
         'description',
-        "image"
+        "image",
+        "user_id",
     ];
 
 

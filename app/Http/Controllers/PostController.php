@@ -5,11 +5,27 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Request;
 
 class PostController extends Controller
 {
+    /*
+    Habia creado esta fucnione ya que necesitaba obtener la id del usuario de alguna forma pero es que estoy haciendo algo parecido en el middleware y no me a 
+    convencido hacer esto, por eso he encontrado otra forma de hacerlo desde el propio middleware y ahi esta la explicacion de como lo he hecho.
+
+    private function obtenerIdUsuario(){
+
+        $token = Request::header("Authorization");
+        $response = Http::withToken($token)->get("http://localhost/ApiUsuario_PF/public/api/validarToken");
+        $data = $response->json();
+        $userId = $data["user"]["id"];
+
+        return $userId;
+
+    }
+    */
     public function index()
     {
         $posts = Post::paginate(10);
@@ -33,11 +49,13 @@ class PostController extends Controller
 
     public function store(PostStoreRequest $request)
     {
+
         $post = Post::create([
             "nameAnimal"=>$request->nameAnimal,
             "typeAnimal"=>$request->typeAnimal,
             "description"=>$request->description,
-            "image"=>$request->image,  
+            "image"=>$request->image,
+            "user_id"=>$request->user_id,  
         ]);
 
         if(!$post){

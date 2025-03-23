@@ -16,7 +16,7 @@ class PostUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nameAnimal'=>'string | max:255 | unique:posts,nameAnimal'. $this->route('identificador'),
+            'nameAnimal'=>'string | max:255 | unique:posts,nameAnimal,'. $this->route('id'),
             'typeAnimal'=>'in:perro,gato',
             'description'=>'string | max:255',
             'image'=>'image | mime:jpeg,png,jpg,gif,svg | max:2048',
