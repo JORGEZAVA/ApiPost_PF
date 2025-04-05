@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class VerificarUsuarioMiddleware
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         $token = $request->header("Authorization");
 

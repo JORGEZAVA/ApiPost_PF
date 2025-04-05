@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -16,10 +17,12 @@ return new class extends Migration
             $table->string('nameAnimal')->unique();
             $table->string('typeAnimal');
             $table->string('description');
-            $table->binary('image')->nullable();
+
             $table->boolean('adopted')->default(false);
             $table->timestamps();
         });
+        // Luego, modifica la tabla con una sentencia raw para cambiar la columna a MEDIUMBLOB
+        DB::statement('ALTER TABLE posts ADD COLUMN image MEDIUMBLOB AFTER description');
     }
 
 

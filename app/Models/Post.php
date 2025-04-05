@@ -29,6 +29,11 @@ class Post extends Model
         ];
     }
 
+    public function getImageAttribute($value)
+    {
+        return base64_encode($value);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

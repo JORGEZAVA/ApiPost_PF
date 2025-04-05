@@ -49,13 +49,22 @@ class PostController extends Controller
 
     public function store(PostStoreRequest $request)
     {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            // Leer el contenido del archivo
+            $imageData = file_get_contents($file->getRealPath());
+            // Opcional: Si prefieres almacenarlo en base64, descomenta la siguiente línea:
+            // $imageData = base64_encode($imageData);
+        } else {
+            $imageData = null;
+        }
 
         $post = Post::create([
             "nameAnimal"=>$request->nameAnimal,
             "typeAnimal"=>$request->typeAnimal,
             "description"=>$request->description,
-            "image"=>$request->image,
-            "user_id"=>$request->user_id,  
+            "image"=>$imageData,
+            "user_id"=>$request->user_id,  // Aqui utilizamos el user_id que hemos obtenido del middleware
         ]);
 
         if(!$post){

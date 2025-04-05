@@ -16,10 +16,11 @@ class PostStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nameAnimal'=>'required | string | max:255 | unique:posts,nameAnimal',
-            'typeAnimal'=>'required | string | in:perro,gato',
-            'description'=>'required | string | max:255',
-            'image'=>' image | mime:jpeg,png,jpg,gif,svg | max:2048',
+            'nameAnimal'=>'required|string|max:255|unique:posts,nameAnimal',
+            'typeAnimal'=>'required|string|in:perro,gato',
+            'description'=>'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+
         ];
     }
 
