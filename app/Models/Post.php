@@ -19,6 +19,7 @@ class Post extends Model
         'description',
         "image",
         "user_id",
+        "adopted"
     ];
 
 
@@ -36,6 +37,16 @@ class Post extends Model
 
     public function user()
     {
+        return $this->belongsTo(User::class, "user_id");
+    }
+
+    public function userAdopted()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public function contract()
+    {
+        return $this->hasOne(Contrato::class, "post_id");
     }
 }

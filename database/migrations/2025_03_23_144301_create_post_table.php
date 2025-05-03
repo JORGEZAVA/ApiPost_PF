@@ -17,8 +17,13 @@ return new class extends Migration
             $table->string('nameAnimal')->unique();
             $table->string('typeAnimal');
             $table->string('description');
-
+            $table->string("race");
             $table->boolean('adopted')->default(false);
+            $table->unsignedBigInteger('userAdopted_id')->nullable();
+            $table->foreign('userAdopted_id')->references('id')->on('users')->onDelete('set null');
+            //Vacunas
+           
+           
             $table->timestamps();
         });
         // Luego, modifica la tabla con una sentencia raw para cambiar la columna a MEDIUMBLOB

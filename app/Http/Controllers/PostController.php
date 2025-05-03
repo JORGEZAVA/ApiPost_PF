@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;
@@ -28,7 +29,7 @@ class PostController extends Controller
     */
     public function index()
     {
-        $posts = Post::paginate(10);
+        $posts = Post::paginate(9);
 
         if($posts->isEmpty()){
             $data=[
@@ -49,6 +50,17 @@ class PostController extends Controller
 
     public function store(PostStoreRequest $request)
     {
+    
+        $usuario = User::find($request->user_id);
+
+        if ($usuario->is_banned) {
+            return response()->json([
+                'mensaje' => 'No tienes permitido publicar posts porque estás baneado.',
+                'status' => 403
+            ], 403);
+        }
+
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             // Leer el contenido del archivo
@@ -128,6 +140,13 @@ class PostController extends Controller
         if($request->has('image')){
             $post->image=$request->image;
         }
+        if($request->has('adopted')){
+            $post->adopted=$request->adopted;
+        }
+        if($request->has('userAdopted_id')){
+            $post->userAdopted_id=$request->userAdopted_id;
+        }
+        
         $post->save();
 
         return response()->json([
@@ -156,4 +175,58 @@ class PostController extends Controller
             "status"=>200,
         ],200);
     }
+
+    public function ultimosPosts($identificador = null){
+        if ($identificador) {
+            $posts = Post::query()->where("user_id", $identificador)
+                ->orderBy("created_at", "desc")
+                ->take(6)
+                ->get();
+        } else {
+            
+            $posts = Post::query()->orderBy("created_at", "desc")
+                ->take(6)
+                ->get();
+        }
+        
+        if($posts->isEmpty()){
+            $data=[
+                "mensaje"=>"No se encontraron posts",
+                "status"=>404,
+            ];
+            return response()->json($data,404);
+        }
+        $data=[
+            "mensaje"=>"Ultimos posts",
+            "posts"=>$posts,
+            "status"=>200
+        ];
+        return response()->json($data,200);
+    }
+
+    public function adoptedPosts($identificador){
+
+        $posts = Post::query()->where("userAdopted_id", $identificador)
+            ->orderBy("created_at", "desc")
+            ->take(4)
+            ->get();
+
+        if($posts->isEmpty()){
+            $data=[
+                "mensaje"=>"No se han encontrado posts adoptados",
+                "status"=>404,
+            ];
+            return response()->json($data,404);
+        };
+
+        $data=[
+            "mensaje"=>"Ultimos posts adoptador",
+            "posts"=>$posts,
+            "status"=>200
+        ];
+
+        return response()->json($data,200);
+    }
+
+    
 }
