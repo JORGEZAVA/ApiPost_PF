@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\VerificarAdminMiddleware;
 use App\Http\Middleware\VerificarUsuarioMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'verificarUsuario' => VerificarUsuarioMiddleware::class,
+            'verificarAdmin' => VerificarAdminMiddleware::class,
         ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

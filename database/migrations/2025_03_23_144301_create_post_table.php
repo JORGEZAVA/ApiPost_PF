@@ -17,10 +17,11 @@ return new class extends Migration
             $table->string('nameAnimal')->unique();
             $table->string('typeAnimal');
             $table->string('description');
-            $table->string("race");
+            $table->string("race")->nullable();
             $table->boolean('adopted')->default(false);
             $table->unsignedBigInteger('userAdopted_id')->nullable();
             $table->foreign('userAdopted_id')->references('id')->on('users')->onDelete('set null');
+            $table->boolean('verificado')->default(false);
             //Vacunas
            
            

@@ -33,7 +33,8 @@ class PostFactory extends Factory
             'description' => fake()->text(200),
             'user_id' => 1,
             'created_at' => $this->faker->dateTimeBetween('-2 month', 'now'),
-            'updated_at' => now()
+            'updated_at' => now(),
+            "verificado" => true,
         ];
     }
 }

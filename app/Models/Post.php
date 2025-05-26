@@ -27,6 +27,7 @@ class Post extends Model
     {
         return [
             "adopted"=>  "boolean",
+            "verificado"=>  "boolean"
         ];
     }
 
