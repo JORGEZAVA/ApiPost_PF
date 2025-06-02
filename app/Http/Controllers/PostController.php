@@ -69,6 +69,10 @@ class PostController extends Controller
             "image"=>$imageData,
             "user_id"=>$request->input("user_id"),  // Aqui utilizamos el user_id que hemos obtenido del middleware
         ]);
+         if ($request->filled('vaccines')) {
+        $post->vaccines = $request->input('vaccines'); // invoca el mutator
+        $post->save();
+    }
 
         if(!$post){
             $data=[
@@ -152,7 +156,10 @@ class PostController extends Controller
         if($request->has('userAdopted_id')){
             $post->userAdopted_id=$request->input('userAdopted_id');
         }
-        
+         if ($request->filled('vaccines')) {
+        // Invoca automáticamente setVaccinesAttribute en el modelo
+        $post->vaccines = $request->input('vaccines');
+    }
         $post->save();
 
         $data=[
@@ -280,3 +287,5 @@ class PostController extends Controller
     }
     
 }
+
+

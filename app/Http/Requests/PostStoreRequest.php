@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use App\Models\Post;
 
 class PostStoreRequest extends FormRequest
 {
@@ -20,6 +22,8 @@ class PostStoreRequest extends FormRequest
             'typeAnimal'=>'required|string|in:perro,gato',
             'description'=>'required|string|min:10|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'vaccines'   => ['sometimes', 'array'],
+            'vaccines.*' => ['string', Rule::in(array_keys(Post::$VACCINES))],
         ];
     }
 
@@ -55,6 +59,10 @@ class PostStoreRequest extends FormRequest
             'image.image'    => 'La :attribute no es válida.',
             'image.mimes'    => 'La :attribute no tiene un formato válido.',
             'image.max'      => 'La :attribute no puede pesar más de 2MB.',
+
+            'vaccines.array'        => 'Las :attribute deben enviarse como un arreglo.',
+            'vaccines.*.string'     => 'Cada vacuna debe ser un texto válido.',
+            'vaccines.*.in'         => 'Vacuna inválida. Los valores permitidos son: ' . implode(', ', array_keys(Post::$VACCINES)) . '.',
         ];
     }
     
@@ -69,6 +77,7 @@ class PostStoreRequest extends FormRequest
             'typeAnimal'  => 'tipo',
             'description' => 'descripción',
             'image'       => 'imagen',
+            'vaccines'    => 'vacunas',
         ];
     }
     
