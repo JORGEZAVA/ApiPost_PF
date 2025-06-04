@@ -25,7 +25,7 @@ class VerificarUsuarioMiddleware
 
         //El response lo pasamos a formato json y de ahi obtener la id del usuario
         $data = $response->json();
-        $userId = $data['user']['id'];
+        $userId = $data['usuario']['id'];
         /*Con esta funcion del request podemos añadir un nuevo campo a la request que es el user_id
         y le pasamos la id del usuario que hemos obtenido del token. Se pasa como key=valor en forma de array*/
         $request->merge(['user_id' => $userId]);

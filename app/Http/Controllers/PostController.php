@@ -8,20 +8,59 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+
 
 class PostController extends Controller
 {
     // Obtener todos los posts si estan verificados
-    public function index($identificadorUsuario = null)
-    {
-        if ($identificadorUsuario) {
-            $posts = Post::query()->where("user_id", $identificadorUsuario)->where("verificado",true)->paginate(10);
-        } else {
-            $posts = Post::query()->where("verificado",true)->paginate(10);
+    public function index(Request $request){
+        $search = $request->input('search',null);
+        $searchType = $request->input('searchType',null);
+
+        $query = Post::query()->where("verificado",true);
+
+        if ($searchType) {
+            $query->where("typeAnimal", $searchType );
         }
 
-        if($posts->isEmpty()){
+        if ($search) {
+            $query->where("nameAnimal", "like", '%' . $search . '%');
+        }
+
+        $posts = $query->paginate(9);
+
+        if($posts->count() === 0){
+            $data=[
+                "mensaje"=>"No se encontraron posts",
+                "status"=>404,
+            ];
+            return response()->json($data,404);
+        }
+
+        $data=[
+            "mensaje"=>"Listado de posts",
+            "posts"=>$posts,
+            "status"=>200
+        ];
+
+        return response()->json($data,200);
+    }
+
+    public function showPostsVerifiedUser($identificadorUsuario, Request $request){
+        $search = $request->input('search',null);
+        
+        $query = Post::query()
+        ->where("user_id", $identificadorUsuario)
+        ->where("verificado", true);
+
+        if ($search) {
+            $query->where("nameAnimal", "like", '%' . $search . '%');
+        }
+
+        $posts = $query->paginate(10);
+
+        if($posts->count() === 0){
             $data=[
                 "mensaje"=>"No se encontraron posts",
                 "status"=>404,
@@ -39,8 +78,7 @@ class PostController extends Controller
     }
 
     // Crear post
-    public function store(PostStoreRequest $request)
-    {
+    public function store(PostStoreRequest $request){
     
         $usuario = User::find($request->user_id);
 
@@ -88,8 +126,8 @@ class PostController extends Controller
     }
 
     // Mostrar un post si esta verificado
-    public function show($identificador)
-    {
+    public function show($identificador){
+
         $post = Post::query()->where("id",$identificador)->first();
 
         if(!$post){
@@ -111,8 +149,7 @@ class PostController extends Controller
     }
 
     // Actualizar un post
-    public function update(PostUpdateRequest $request, $identificador)
-    {
+    public function update(PostUpdateRequest $request, $identificador){
         $post = Post::find($identificador);
 
         if(!$post){
@@ -148,10 +185,9 @@ class PostController extends Controller
         
         if($request->has('adopted')){
             $post->adopted=$request->input('adopted');
+            $post->userAdopted_id=$request->input('user_id');
         }
-        if($request->has('userAdopted_id')){
-            $post->userAdopted_id=$request->input('userAdopted_id');
-        }
+     
         
         $post->save();
 
@@ -164,8 +200,7 @@ class PostController extends Controller
     }
 
     // Eliminar un post
-    public function destroy($identificador)
-    {
+    public function destroy($identificador){
         $post = Post::find($identificador);
 
         if(!$post){
@@ -186,17 +221,15 @@ class PostController extends Controller
     }
 
     // Obtener los ultimos 6 posts 
-    public function ultimosPosts($identificador = null){
-        if ($identificador) {
-            $posts = Post::query()->where("user_id", $identificador)->where("verificado",true)
-                ->orderBy("created_at", "desc")
-                ->take(6)
-                ->get();
-        } else {
-            $posts = Post::query()->orderBy("created_at", "desc")->where("verificado",true)
-                ->take(6)
-                ->get();
+    public function ultimosPosts($identificadorUsuario = null){
+        
+        $query = Post::query()->orderBy("created_at", "desc")->where("verificado",true);
+        
+        if ($identificadorUsuario) {
+            $query->where("user_id", $identificadorUsuario);
         }
+
+        $posts = $query->take(6)->get();
         
         if($posts->isEmpty()){
             $data=[
@@ -214,13 +247,19 @@ class PostController extends Controller
     }
 
     // Obtener los ultimos posts adoptados
-    public function adoptedPosts($identificador){
+    public function adoptedPosts($identificador, $search = null){
 
-        $posts = Post::query()->where("userAdopted_id", $identificador)->where("verificado",true)
-            ->orderBy("created_at", "desc")
-            ->get();
 
-        if($posts->isEmpty()){
+        $query = Post::query()->where("userAdopted_id", $identificador)->where("verificado",true)->orderBy("created_at", "desc");
+
+        if ($search) {
+            $query->where("nameAnimal", "like", '%' . $search . '%');
+        }
+        
+        $posts = $query->paginate(10);
+           
+
+        if($posts->count() === 0){
             $data=[
                 "mensaje"=>"No se han encontrado posts adoptados",
                 "status"=>404,
@@ -259,8 +298,17 @@ class PostController extends Controller
         return response()->json($data,201);
     }
     
-    public function noVerificados(){
-        $posts = Post::where("verificado",false)->paginate(10);
+    public function noVerificados(Request $request){
+
+        $search = $request->input('search',null);
+    
+        $query = Post::query()->where("verificado",false);
+
+        if($search){
+            $query->where("nameAnimal", "like", '%' . $search . '%');
+        }
+
+        $posts = $query->paginate(10);
 
         if($posts->count() === 0){
             $data=[
@@ -280,3 +328,5 @@ class PostController extends Controller
     }
     
 }
+
+

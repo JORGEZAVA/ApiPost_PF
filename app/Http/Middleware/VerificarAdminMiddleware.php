@@ -33,7 +33,7 @@ class VerificarAdminMiddleware
 
         $data = $response->json();
        
-        if ($data['user']['role'] !== 'admin') {
+        if ($data['usuario']['role'] !== 'admin') {
             
             $data=[
                 "error" => "Acceso no autorizado. Se requiere rol de administrador.",
