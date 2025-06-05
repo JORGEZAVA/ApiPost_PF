@@ -109,6 +109,11 @@ class PostController extends Controller
             "user_id"=>$request->input("user_id"),  // Aqui utilizamos el user_id que hemos obtenido del middleware
         ]);
 
+        if ($request->filled('vaccines')) {
+            $post->vaccines = $request->input('vaccines'); // invoca el mutator
+            $post->save();
+        }
+
         if(!$post){
             $data=[
                 "mensaje"=>"ERROR al crear un post, intenta de nuevo",
@@ -171,6 +176,10 @@ class PostController extends Controller
             $post->description=$request->input('description');
         }
 
+        if($request->has('race')){
+            $post->race=$request->input('race');
+        }
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             // Leer el contenido del archivo
@@ -187,6 +196,11 @@ class PostController extends Controller
         if($request->has('adopted')){
             $post->adopted=$request->input('adopted');
             $post->userAdopted_id=$request->input('user_id');
+        }
+
+        if ($request->filled('vaccines')) {
+            // Invoca automáticamente setVaccinesAttribute en el modelo
+            $post->vaccines = $request->input('vaccines');
         }
      
         

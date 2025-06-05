@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreign('userAdopted_id')->references('id')->on('users')->onDelete('set null');
             $table->boolean('verificado')->default(false);
             //Vacunas
+            $table->unsignedInteger('vaccines_mask')->default(0);
            
            
             $table->timestamps();
