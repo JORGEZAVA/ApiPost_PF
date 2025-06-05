@@ -104,6 +104,7 @@ class PostController extends Controller
             "nameAnimal"=>$request->input('nameAnimal'),
             "typeAnimal"=>$request->input('typeAnimal'),
             "description"=>$request->input('description'),
+            "race"=>$request->input('race'),
             "image"=>$imageData,
             "user_id"=>$request->input("user_id"),  // Aqui utilizamos el user_id que hemos obtenido del middleware
         ]);

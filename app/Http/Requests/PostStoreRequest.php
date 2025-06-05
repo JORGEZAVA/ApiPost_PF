@@ -20,6 +20,8 @@ class PostStoreRequest extends FormRequest
             'typeAnimal'=>'required|string|in:perro,gato',
             'description'=>'required|string|min:10|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            "race" => "required|string|min:3",
+            
         ];
     }
 

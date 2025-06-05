@@ -19,7 +19,8 @@ class Post extends Model
         'description',
         "image",
         "user_id",
-        "adopted"
+        "adopted",
+        "race",
     ];
 
 
