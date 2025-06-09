@@ -17,7 +17,7 @@ class VerificarUsuarioMiddleware
             return response()->json(["error" => "No autenticado"], 401);
         }
 
-        $response = Http::withToken($token)->get("http://localhost/ApiUsuario_PF/public/api/validarToken");
+        $response = Http::withToken($token)->get("https://apipost-pf.onrender.com/api/validarToken");
 
         if (!$response->successful()) {
             return response()->json(["error" => "Token inválido o usuario no autenticado"], 401);
