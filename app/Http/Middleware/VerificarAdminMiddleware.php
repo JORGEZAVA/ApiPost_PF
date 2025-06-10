@@ -21,7 +21,7 @@ class VerificarAdminMiddleware
             return response()->json($data, 401);
         }
 
-        $response = Http::withToken($token)->get("https://apipost-pf.onrender.com/apivalidarToken");
+        $response = Http::withToken($token)->get("https://apipost-pf.onrender.com/api/validarToken");
 
         if (!$response->successful()) {
             $data=[
